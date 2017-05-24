@@ -1,0 +1,10 @@
+
+grunt>a= load '/user/acadgild/sample.xml' using org.apache.pig.piggybank.storage.XMLLoader('book') as (p:chararray);
+
+b= foreach a generate REPLACE(p,'[\\n]','') as p;
+
+c = foreach b generate REGEX_EXTRACT_ALL(x,'.*(?:<author>)([^<]*).*(?:<title>)([^<]*).*(?:<genre>)([^<]*).*(?:<price>)([^<]*).*(?:<publish_date>)([^<]*).*(?:<description>)([^<]*).*');
+
+d = foreach c generate FLATTEN(($0));
+
+STORE d INTO '/xmltocsv' USING org.apache.pig.piggybank.storage.CSVExcelStorage();
